@@ -1,0 +1,107 @@
+============Anova one-way classification==============================================================================================================
+import numpy as np
+import pandas as pd
+import matplotlib as plt
+
+#Data
+x=list(map(int,input().split()))
+y=list(map(int,input().split()))
+z=list(map(int,input().split()))
+x=np.array(x)
+y=np.array(y)
+z=np.array(z)
+alpha=float(input())
+a=len(x)
+b=len(y)
+c=len(z)
+print(x)
+print(y)
+print(z)
+
+#calculation
+sumx=sum(x)
+sumy=sum(y)
+sumz=sum(z)
+g=sumx+sumy+sumz
+print("G=",g)
+sumx2=(sumx**2)/a
+sumy2=(sumy**2)/b
+sumz2=(sumz**2)/c
+tn=sumx2+sumy2+sumz2
+print("T^2/N=",tn)
+rss=np.sum(x**2)+np.sum(y**2)+np.sum(z**2)
+print("RSS=",rss)
+n=a+b+c
+k=3
+cf=g**2/n
+print("CF=",cf)
+sst=rss-cf
+print("SST=",sst)
+sstr=tn-cf
+print("SSTR=",sstr)
+sse=sst-sstr
+print("SSE=",sse)
+
+#Anova one-way classification table
+import pandas as pd
+df=pd.read_excel("C:\\Users\\exam2\\Desktop\\data1.xlsx")
+sof=[sstr,sse,sst]
+df['sum of squares']=sof
+dof=[k-1,n-k,n-1]
+df['Degrees of freedom']=dof
+msos=[sof[0]/dof[0],sof[1]/dof[1],'']
+df['Mean sum of Squares']=msos
+Fcal=msos[0]/msos[1]
+vr=['',Fcal,'']
+df['Variance Ratio']=vr
+print(df)
+print("Fcal=",Fcal)
+
+#Inference
+import scipy.stats as s
+Ftv=s.f.ppf(1-alpha,k-1,n-k)
+print("Ftv=",Ftv)
+if Fcal <= Ftv:
+    print("We Accept Ho")
+else:
+    print("We Reject Ho")
+    
+#Calculating F value using Built in Functionk
+import scipy.stats 
+Fb=scipy.stats.f_oneway(x,y,z)
+print("Fcal-b=",Fb)
+
+==========================================output==========================================================================
+
+13 10 8 11 8
+13 11 14 14
+4 1 3 4 2 4
+0.05
+[13 10  8 11  8]
+[13 11 14 14]
+[4 1 3 4 2 4]
+
+G= 120
+T^2/N= 1230.0
+RSS= 1262
+CF= 960.0
+SST= 302.0
+SSTR= 270.0
+SSE= 32.0
+
+  source of variation  sum of squares  Degrees of freedom Mean sum of Squares  
+0           Treatment           270.0                   2               135.0   
+1               Error            32.0                  12            2.666667   
+2               Total           302.0                  14                      
+  Variance Ratio  
+0                 
+1         50.625  
+2                 
+Fcal= 50.625
+
+Ftv= 3.8852938346523933
+We Reject Ho
+
+Fcal-b= F_onewayResult(statistic=50.625, pvalue=1.415331629132145e-06)
+
+=================================================================================================================================================================
